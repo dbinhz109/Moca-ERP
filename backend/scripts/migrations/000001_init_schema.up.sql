@@ -218,7 +218,7 @@ VALUES (
     'admin@mocatech.vn',
     'admin',
     'MOCA Admin',
-    -- bcrypt hash của "Admin@123" (thay trước khi deploy production)
-    '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj6N6ROVvS6W',
+    -- bcrypt hash của "password" — ĐỔI NGAY sau lần đăng nhập đầu (Cài đặt → Tài khoản)
+    '$2a$10$C5PHDn/HbmYUE11uxw4EDuHTmw.IfAwSkeDuYLAYP3DuSBdTyK4R.',
     'admin'
 );
