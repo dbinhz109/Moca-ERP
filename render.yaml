@@ -1,0 +1,19 @@
+# Render Blueprint — vào Render.com → New → Blueprint → chọn repo này.
+# JWT_SECRET tự sinh; DATABASE_URL & FRONTEND_ORIGIN nhập khi deploy.
+services:
+  - type: web
+    name: moca-erp-api
+    runtime: docker
+    repo: # Render tự điền khi import từ GitHub
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /ping
+    autoDeploy: true
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true        # Render tự sinh chuỗi bí mật mạnh
+      - key: DATABASE_URL
+        sync: false                # nhập tay: chuỗi Neon ?sslmode=require
+      - key: FRONTEND_ORIGIN
+        sync: false                # nhập tay: https://<app>.vercel.app
