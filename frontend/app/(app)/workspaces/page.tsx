@@ -1,17 +1,31 @@
 "use client";
 
 import Link from "next/link";
+import { toast } from "sonner";
 import { Topbar } from "@/components/layout/Topbar";
-import { useWorkspaces } from "@/lib/hooks/useWorkspaces";
+import { useWorkspaces, useDeleteWorkspace } from "@/lib/hooks/useWorkspaces";
 import { CreateWorkspaceDialog } from "@/components/workspace/CreateWorkspaceDialog";
 import { Button } from "@/components/ui/button";
+import { ConfirmDelete } from "@/components/ui/ConfirmDelete";
 import { useAuthStore } from "@/store/authStore";
+import { extractErrorMessage } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
 import { FolderKanban } from "lucide-react";
 
 export default function WorkspacesPage() {
   const { data: workspaces = [], isLoading } = useWorkspaces();
   const isAdmin = useAuthStore((s) => s.user?.role) === "admin";
+  const deleteWorkspace = useDeleteWorkspace();
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteWorkspace.mutateAsync(id);
+      toast.success("Đã xoá workspace");
+    } catch (err) {
+      toast.error(extractErrorMessage(err, "Không thể xoá workspace"));
+      throw err;
+    }
+  };
 
   return (
     <>
@@ -34,10 +48,19 @@ export default function WorkspacesPage() {
         ) : (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {workspaces.map((w) => (
+              <div key={w.id} className="group relative">
+                {isAdmin && (
+                  <ConfirmDelete
+                    className="absolute right-2 top-2 z-10"
+                    ariaLabel={`Xoá workspace ${w.name}`}
+                    title="Xoá workspace?"
+                    description={`Xoá "${w.name}" sẽ xoá toàn bộ dự án, công việc bên trong. Không thể hoàn tác.`}
+                    onConfirm={() => handleDelete(w.id)}
+                  />
+                )}
               <Link
-                key={w.id}
                 href={`/workspaces/${w.id}`}
-                className="group rounded-xl border border-border bg-white p-4 transition-all hover:border-pink/30 hover:shadow-[0_4px_16px_rgba(255,107,157,0.12)]"
+                className="block rounded-xl border border-border bg-white p-4 transition-all hover:border-pink/30 hover:shadow-[0_4px_16px_rgba(255,107,157,0.12)]"
               >
                 <div className="mb-3 flex items-center gap-3">
                   <div
@@ -59,6 +82,7 @@ export default function WorkspacesPage() {
                   <span className="text-pink opacity-0 transition-opacity group-hover:opacity-100">Mở →</span>
                 </div>
               </Link>
+              </div>
             ))}
           </div>
         )}

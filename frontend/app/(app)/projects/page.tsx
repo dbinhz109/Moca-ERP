@@ -2,12 +2,15 @@
 
 import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
+import { toast } from "sonner";
 import { Topbar } from "@/components/layout/Topbar";
 import { Input } from "@/components/ui/input";
+import { ConfirmDelete } from "@/components/ui/ConfirmDelete";
 import { ProjectCard } from "@/components/project/ProjectCard";
 import { CreateProjectDialog } from "@/components/project/CreateProjectDialog";
-import { useProjects } from "@/lib/hooks/useProjects";
+import { useProjects, useDeleteProject } from "@/lib/hooks/useProjects";
 import { useAuthStore } from "@/store/authStore";
+import { extractErrorMessage } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 type RagFilter = "all" | "green" | "amber" | "red";
@@ -24,7 +27,19 @@ export default function ProjectsPage() {
   const [rag, setRag] = useState<RagFilter>("all");
   const { data: resp, isLoading } = useProjects();
   const projects = resp?.projects || [];
-  const isAdmin = useAuthStore((s) => s.user?.role) === "admin";
+  const user = useAuthStore((s) => s.user);
+  const isAdmin = user?.role === "admin";
+  const deleteProject = useDeleteProject();
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteProject.mutateAsync(id);
+      toast.success("Đã xoá dự án");
+    } catch (err) {
+      toast.error(extractErrorMessage(err, "Không thể xoá dự án"));
+      throw err;
+    }
+  };
 
   const filtered = useMemo(() => {
     return projects.filter((p) => {
@@ -95,7 +110,23 @@ export default function ProjectsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-            {filtered.map((p) => <ProjectCard key={p.id} project={p} />)}
+            {filtered.map((p) => {
+              const canDelete = isAdmin || p.pm_id === user?.id;
+              return (
+                <div key={p.id} className="group relative">
+                  {canDelete && (
+                    <ConfirmDelete
+                      className="absolute right-2 top-2 z-10"
+                      ariaLabel={`Xoá dự án ${p.name}`}
+                      title="Xoá dự án?"
+                      description={`Xoá "[${p.code}] ${p.name}" sẽ xoá toàn bộ giai đoạn, công việc liên quan. Không thể hoàn tác.`}
+                      onConfirm={() => handleDelete(p.id)}
+                    />
+                  )}
+                  <ProjectCard project={p} />
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

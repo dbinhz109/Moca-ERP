@@ -37,3 +37,17 @@ export function useCreateWorkspace() {
     },
   });
 }
+
+export function useDeleteWorkspace() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { data } = await api.delete(`/workspaces/${id}`);
+      return data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["workspaces"] });
+      qc.invalidateQueries({ queryKey: ["projects"] }); // xoá workspace cascade project
+    },
+  });
+}
