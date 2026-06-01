@@ -1,0 +1,498 @@
+syntax = "v1"
+
+info (
+	title:   "MOCA ERP API"
+	desc:    "Hệ thống Quản lý Dự án MOCA"
+	author:  "MOCA Tech"
+	version: "1.0"
+)
+
+// ─── AUTH TYPES ───────────────────────────────────────────────
+type LoginReq {
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}
+
+type LoginResp {
+	Token     string   `json:"token"`
+	ExpiresAt int64    `json:"expires_at"`
+	User      UserInfo `json:"user"`
+}
+
+type UserInfo {
+	Id       string `json:"id"`
+	Username string `json:"username"`
+	FullName string `json:"full_name"`
+	Email    string `json:"email"`
+	Role     string `json:"role"`
+	Avatar   string `json:"avatar,omitempty"`
+}
+
+// ─── WORKSPACE TYPES ──────────────────────────────────────────
+type CreateWorkspaceReq {
+	Name        string `json:"name" validate:"required,max=200"`
+	Description string `json:"description,optional"`
+	Color       string `json:"color,optional"`
+}
+
+type WorkspaceResp {
+	Id           string `json:"id"`
+	Name         string `json:"name"`
+	Description  string `json:"description"`
+	Color        string `json:"color"`
+	OwnerId      string `json:"owner_id"`
+	ProjectCount int    `json:"project_count"`
+	CreatedAt    string `json:"created_at"`
+}
+
+// ─── PROJECT TYPES ────────────────────────────────────────────
+type CreateProjectReq {
+	WorkspaceId string `json:"workspace_id,optional"`
+	Code        string `json:"code" validate:"required,max=20"`
+	Name        string `json:"name" validate:"required,max=300"`
+	Type        string `json:"type" validate:"required"`
+	Description string `json:"description,optional"`
+	StartDate   string  `json:"start_date" validate:"required"`
+	EndDate     string  `json:"end_date" validate:"required"`
+	BonusPool   float64 `json:"bonus_pool,optional"`
+}
+
+type AddProjectMemberReq {
+	UserId      string  `json:"user_id" validate:"required"`
+	BonusAmount float64 `json:"bonus_amount,optional"`
+}
+
+type ProjectMemberResp {
+	Id          string  `json:"id"`
+	Username    string  `json:"username"`
+	FullName    string  `json:"full_name"`
+	Email       string  `json:"email"`
+	Role        string  `json:"role"`
+	ProjectRole string  `json:"project_role"`
+	Avatar      string  `json:"avatar,omitempty"`
+	BonusAmount float64 `json:"bonus_amount"`
+}
+
+type ProjectResp {
+	Id          string  `json:"id"`
+	Code        string  `json:"code"`
+	Name        string  `json:"name"`
+	Type        string  `json:"type"`
+	Status      string  `json:"status"`
+	RagStatus   string  `json:"rag_status"`
+	RagOverride bool    `json:"rag_override"`
+	Progress    float64 `json:"progress"`
+	StartDate   string  `json:"start_date"`
+	EndDate     string  `json:"end_date"`
+	PmId        string  `json:"pm_id"`
+	PmName         string  `json:"pm_name"`
+	MemberCount    int     `json:"member_count"`
+	TaskCount      int     `json:"task_count"`
+	WorkspaceId    string  `json:"workspace_id,omitempty"`
+	BonusPool      float64 `json:"bonus_pool"`
+	BonusAllocated float64 `json:"bonus_allocated"`
+	CreatedAt      string  `json:"created_at"`
+}
+
+type ProjectListResp {
+	Total    int64         `json:"total"`
+	Projects []ProjectResp `json:"projects"`
+}
+
+type UpdateRagReq {
+	RagStatus string `json:"rag_status" validate:"required,oneof=green amber red"`
+	RagNote   string `json:"rag_note,optional"`
+}
+
+// ─── PHASE TYPES ──────────────────────────────────────────────
+type CreatePhaseReq {
+	Name      string  `json:"name" validate:"required,max=200"`
+	Weight    float64 `json:"weight" validate:"required,min=1,max=100"`
+	StartDate string  `json:"start_date,optional"`
+	EndDate   string  `json:"end_date,optional"`
+	SortOrder int     `json:"sort_order,optional"`
+}
+
+type PhaseResp {
+	Id        string  `json:"id"`
+	ProjectId string  `json:"project_id"`
+	Name      string  `json:"name"`
+	Weight    float64 `json:"weight"`
+	Progress  float64 `json:"progress"`
+	StartDate string  `json:"start_date,omitempty"`
+	EndDate   string  `json:"end_date,omitempty"`
+	SortOrder int     `json:"sort_order"`
+	TaskCount int     `json:"task_count"`
+}
+
+// ─── TASK TYPES ───────────────────────────────────────────────
+type CreateTaskReq {
+	PhaseId        string  `json:"phase_id" validate:"required"`
+	Title          string  `json:"title" validate:"required,max=500"`
+	Description    string  `json:"description,optional"`
+	AssigneeId     string  `json:"assignee_id,optional"`
+	Priority       string  `json:"priority" validate:"required,oneof=low medium high urgent"`
+	DueDate        string  `json:"due_date,optional"`
+	EstimatedHours float64 `json:"estimated_hours,optional"`
+}
+
+type TaskResp {
+	Id             string  `json:"id"`
+	ProjectId      string  `json:"project_id"`
+	PhaseId        string  `json:"phase_id"`
+	ParentId       string  `json:"parent_id,omitempty"`
+	Title          string  `json:"title"`
+	Description    string  `json:"description,omitempty"`
+	Status         string  `json:"status"`
+	Priority       string  `json:"priority"`
+	AssigneeId     string  `json:"assignee_id,omitempty"`
+	AssigneeName   string  `json:"assignee_name,omitempty"`
+	AssigneeAvatar string  `json:"assignee_avatar,omitempty"`
+	DueDate        string  `json:"due_date,omitempty"`
+	EstimatedHours float64 `json:"estimated_hours"`
+	ActualHours    float64 `json:"actual_hours"`
+	IsOverdue      bool           `json:"is_overdue"`
+	ColumnPosition int            `json:"column_position"`
+	CreatedBy      string         `json:"created_by,omitempty"`
+	Assignees      []TaskAssignee `json:"assignees"`
+	DoneCount      int            `json:"done_count"`
+	AssigneeCount  int            `json:"assignee_count"`
+	CreatedAt      string         `json:"created_at"`
+}
+
+type TaskAssignee {
+	Id       string `json:"id"`
+	FullName string `json:"full_name"`
+	Avatar   string `json:"avatar,omitempty"`
+	IsDone   bool   `json:"is_done"`
+}
+
+type AddTaskAssigneeReq {
+	UserId string `json:"user_id" validate:"required"`
+}
+
+type MyProgressReq {
+	Done bool `json:"done"`
+}
+
+type UpdateTaskStatusReq {
+	Status string `json:"status" validate:"required,oneof=new in_progress pending_review done rejected"`
+}
+
+type ApproveTaskReq {
+	Action  string `json:"action" validate:"required,oneof=approve reject"`
+	Comment string `json:"comment,optional"`
+}
+
+type TaskCommentReq {
+	Content string `json:"content" validate:"required"`
+}
+
+type TaskCommentResp {
+	Id        string   `json:"id"`
+	TaskId    string   `json:"task_id"`
+	AuthorId  string   `json:"author_id"`
+	Author    UserInfo `json:"author"`
+	Content   string   `json:"content"`
+	CreatedAt string   `json:"created_at"`
+}
+
+// ─── MEETING TYPES ────────────────────────────────────────────
+type CreateMeetingReq {
+	Title          string   `json:"title" validate:"required,max=300"`
+	Type           string   `json:"type" validate:"required,oneof=review standup board other"`
+	StartTime      string   `json:"start_time" validate:"required"`
+	EndTime        string   `json:"end_time" validate:"required"`
+	Location       string   `json:"location,optional"`
+	MeetingUrl     string   `json:"meeting_url,optional"`
+	ProjectId      string   `json:"project_id,optional"`
+	AttendeeIds    []string `json:"attendee_ids,optional"`
+	IsRecurring    bool     `json:"is_recurring,optional"`
+	RecurrenceRule string   `json:"recurrence_rule,optional"`
+}
+
+type MeetingResp {
+	Id          string     `json:"id"`
+	Title       string     `json:"title"`
+	Type        string     `json:"type"`
+	Status      string     `json:"status"`
+	StartTime   string     `json:"start_time"`
+	EndTime     string     `json:"end_time"`
+	Location    string     `json:"location,omitempty"`
+	MeetingUrl  string     `json:"meeting_url,omitempty"`
+	ProjectId   string     `json:"project_id,omitempty"`
+	ProjectName string     `json:"project_name,omitempty"`
+	OrganizerId string     `json:"organizer_id"`
+	Attendees   []UserInfo `json:"attendees"`
+	Notes       string     `json:"notes,omitempty"`
+	CreatedAt   string     `json:"created_at"`
+}
+
+type MeetingListResp {
+	Total    int64         `json:"total"`
+	Meetings []MeetingResp `json:"meetings"`
+}
+
+type UpdateMeetingNotesReq {
+	Notes string `json:"notes" validate:"required"`
+}
+
+// ─── NOTIFICATION TYPES ───────────────────────────────────────
+type NotificationResp {
+	Id        string `json:"id"`
+	Type      string `json:"type"`
+	Title     string `json:"title"`
+	Body      string `json:"body"`
+	IsRead    bool   `json:"is_read"`
+	RefId     string `json:"ref_id,omitempty"`
+	RefType   string `json:"ref_type,omitempty"`
+	CreatedAt string `json:"created_at"`
+}
+
+// ─── COMMON TYPES ─────────────────────────────────────────────
+type CommonResp {
+	Message string `json:"message"`
+}
+
+type IdPathReq {
+	Id string `path:"id"`
+}
+
+// ════════════════════════════════════════════════════════════
+// SERVICES
+// ════════════════════════════════════════════════════════════
+// ─── AUTH (public) ────────────────────────────────────────────
+@server (
+	prefix: /api/v1
+	group:  auth
+)
+service erp-api {
+	@doc "Đăng nhập"
+	@handler Login
+	post /auth/login (LoginReq) returns (LoginResp)
+
+	@doc "Làm mới token"
+	@handler RefreshToken
+	post /auth/refresh returns (LoginResp)
+}
+
+// ─── USER ─────────────────────────────────────────────────────
+@server (
+	prefix:     /api/v1
+	group:      user
+	middleware: JwtAuth
+)
+service erp-api {
+	@doc "Danh sách người dùng"
+	@handler ListUsers
+	get /users returns ([]UserInfo)
+}
+
+// ─── WORKSPACE ────────────────────────────────────────────────
+@server (
+	prefix:     /api/v1
+	group:      workspace
+	middleware: JwtAuth
+)
+service erp-api {
+	@doc "Danh sách workspace"
+	@handler ListWorkspaces
+	get /workspaces returns ([]WorkspaceResp)
+
+	@doc "Tạo workspace"
+	@handler CreateWorkspace
+	post /workspaces (CreateWorkspaceReq) returns (WorkspaceResp)
+
+	@doc "Chi tiết workspace"
+	@handler GetWorkspace
+	get /workspaces/:id returns (WorkspaceResp)
+
+	@doc "Cập nhật workspace"
+	@handler UpdateWorkspace
+	put /workspaces/:id (CreateWorkspaceReq) returns (WorkspaceResp)
+
+	@doc "Xóa workspace"
+	@handler DeleteWorkspace
+	delete /workspaces/:id returns (CommonResp)
+}
+
+// ─── PROJECT ──────────────────────────────────────────────────
+@server (
+	prefix:     /api/v1
+	group:      project
+	middleware: JwtAuth
+)
+service erp-api {
+	@doc "Danh sách dự án"
+	@handler ListProjects
+	get /projects returns (ProjectListResp)
+
+	@doc "Tạo dự án"
+	@handler CreateProject
+	post /projects (CreateProjectReq) returns (ProjectResp)
+
+	@doc "Chi tiết dự án"
+	@handler GetProject
+	get /projects/:id returns (ProjectResp)
+
+	@doc "Cập nhật dự án"
+	@handler UpdateProject
+	put /projects/:id (CreateProjectReq) returns (ProjectResp)
+
+	@doc "Xóa dự án"
+	@handler DeleteProject
+	delete /projects/:id returns (CommonResp)
+
+	@doc "Override RAG status"
+	@handler UpdateRag
+	patch /projects/:id/rag (UpdateRagReq) returns (ProjectResp)
+
+	@doc "Danh sách thành viên dự án"
+	@handler ListProjectMembers
+	get /projects/:id/members returns ([]ProjectMemberResp)
+
+	@doc "Thêm thành viên"
+	@handler AddProjectMember
+	post /projects/:id/members (AddProjectMemberReq) returns (CommonResp)
+
+	@doc "Xóa thành viên"
+	@handler RemoveProjectMember
+	delete /projects/:id/members/:userId returns (CommonResp)
+}
+
+// ─── PHASE ────────────────────────────────────────────────────
+@server (
+	prefix:     /api/v1
+	group:      phase
+	middleware: JwtAuth
+)
+service erp-api {
+	@doc "Danh sách giai đoạn của dự án"
+	@handler ListPhases
+	get /projects/:id/phases returns ([]PhaseResp)
+
+	@doc "Tạo giai đoạn"
+	@handler CreatePhase
+	post /projects/:id/phases (CreatePhaseReq) returns (PhaseResp)
+
+	@doc "Cập nhật giai đoạn"
+	@handler UpdatePhase
+	put /projects/:projectId/phases/:id (CreatePhaseReq) returns (PhaseResp)
+
+	@doc "Xóa giai đoạn"
+	@handler DeletePhase
+	delete /projects/:projectId/phases/:id returns (CommonResp)
+
+	@doc "Sắp xếp lại giai đoạn"
+	@handler ReorderPhases
+	patch /projects/:id/phases/reorder returns (CommonResp)
+}
+
+// ─── TASK ─────────────────────────────────────────────────────
+@server (
+	prefix:     /api/v1
+	group:      task
+	middleware: JwtAuth
+)
+service erp-api {
+	@doc "Danh sách task của dự án"
+	@handler ListTasks
+	get /projects/:id/tasks returns ([]TaskResp)
+
+	@doc "Tạo task"
+	@handler CreateTask
+	post /projects/:id/tasks (CreateTaskReq) returns (TaskResp)
+
+	@doc "Chi tiết task"
+	@handler GetTask
+	get /tasks/:id returns (TaskResp)
+
+	@doc "Cập nhật task"
+	@handler UpdateTask
+	put /tasks/:id (CreateTaskReq) returns (TaskResp)
+
+	@doc "Xóa task"
+	@handler DeleteTask
+	delete /tasks/:id returns (CommonResp)
+
+	@doc "Cập nhật trạng thái task"
+	@handler UpdateTaskStatus
+	patch /tasks/:id/status (UpdateTaskStatusReq) returns (TaskResp)
+
+	@doc "Duyệt / từ chối task"
+	@handler ApproveTask
+	post /tasks/:id/approve (ApproveTaskReq) returns (TaskResp)
+
+	@doc "Thêm người thực hiện vào task"
+	@handler AddTaskAssignee
+	post /tasks/:id/assignees (AddTaskAssigneeReq) returns (CommonResp)
+
+	@doc "Bớt người thực hiện khỏi task"
+	@handler RemoveTaskAssignee
+	delete /tasks/:id/assignees/:userId returns (CommonResp)
+
+	@doc "Đánh dấu phần của tôi đã/chưa xong"
+	@handler MarkMyProgress
+	patch /tasks/:id/my-progress (MyProgressReq) returns (TaskResp)
+
+	@doc "Comment trên task"
+	@handler AddComment
+	post /tasks/:id/comments (TaskCommentReq) returns (TaskCommentResp)
+
+	@doc "Danh sách comment"
+	@handler ListComments
+	get /tasks/:id/comments returns ([]TaskCommentResp)
+}
+
+// ─── MEETING ──────────────────────────────────────────────────
+@server (
+	prefix:     /api/v1
+	group:      meeting
+	middleware: JwtAuth
+)
+service erp-api {
+	@doc "Danh sách cuộc họp"
+	@handler ListMeetings
+	get /meetings returns (MeetingListResp)
+
+	@doc "Tạo lịch họp"
+	@handler CreateMeeting
+	post /meetings (CreateMeetingReq) returns (MeetingResp)
+
+	@doc "Chi tiết cuộc họp"
+	@handler GetMeeting
+	get /meetings/:id returns (MeetingResp)
+
+	@doc "Cập nhật lịch họp"
+	@handler UpdateMeeting
+	put /meetings/:id (CreateMeetingReq) returns (MeetingResp)
+
+	@doc "Hủy cuộc họp"
+	@handler CancelMeeting
+	patch /meetings/:id/cancel returns (CommonResp)
+
+	@doc "Ghi biên bản họp"
+	@handler UpdateMeetingNotes
+	patch /meetings/:id/notes (UpdateMeetingNotesReq) returns (CommonResp)
+}
+
+// ─── NOTIFICATION ─────────────────────────────────────────────
+@server (
+	prefix:     /api/v1
+	group:      notification
+	middleware: JwtAuth
+)
+service erp-api {
+	@doc "Danh sách thông báo"
+	@handler ListNotifications
+	get /notifications returns ([]NotificationResp)
+
+	@doc "Đánh dấu đã đọc"
+	@handler MarkAsRead
+	patch /notifications/:id/read returns (CommonResp)
+
+	@doc "Đánh dấu tất cả đã đọc"
+	@handler MarkAllRead
+	patch /notifications/read-all returns (CommonResp)
+}
+

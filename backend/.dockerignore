@@ -1,0 +1,7 @@
+.git
+*.md
+*.log
+.env
+.env.*
+bin/
+tmp/

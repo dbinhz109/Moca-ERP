@@ -1,0 +1,18 @@
+# ─── Build ───────────────────────────────────────────────────────
+FROM golang:1.25-alpine AS build
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /erp ./erp.go
+
+# ─── Run ─────────────────────────────────────────────────────────
+FROM alpine:3.20
+RUN apk add --no-cache ca-certificates tzdata
+WORKDIR /app
+COPY --from=build /erp /app/erp
+COPY etc /app/etc
+ENV PORT=8888
+EXPOSE 8888
+# Dùng file cấu hình production (đọc biến môi trường ${...}).
+CMD ["/app/erp", "-f", "etc/erp-api-prod.yaml"]

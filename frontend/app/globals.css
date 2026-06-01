@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --color-pink: #FF6B9D;
+  --color-orange: #FFB347;
+  --color-navy: #1A1A2E;
+  --color-navy2: #16213E;
+  --color-navy3: #0F3460;
+  --color-bg: #F8F9FA;
+  --color-text: #111827;
+  --color-text2: #6B7280;
+  --color-text3: #9CA3AF;
+  --color-border: #E5E7EB;
+  --color-rag-green: #10B981;
+  --color-rag-amber: #F59E0B;
+  --color-rag-red: #EF4444;
+
+  --font-sans: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+:root {
+  --background: #F8F9FA;
+  --foreground: #111827;
+  --gradient: linear-gradient(135deg, #FF6B9D, #FFB347);
+}
+
+html, body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+@layer utilities {
+  .bg-gradient-brand {
+    background: linear-gradient(135deg, #FF6B9D, #FFB347);
+  }
+  .text-gradient-brand {
+    background: linear-gradient(135deg, #FF6B9D, #FFB347);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .border-gradient-brand {
+    border-image: linear-gradient(135deg, #FF6B9D, #FFB347) 1;
+  }
+  .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(0,0,0,.18); border-radius: 999px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+}

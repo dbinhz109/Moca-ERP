@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOCA ERP – Wireframe</title>
+<style>
+  :root {
+    --pink: #FF6B9D;
+    --orange: #FFB347;
+    --gradient: linear-gradient(135deg, #FF6B9D, #FFB347);
+    --navy: #1A1A2E;
+    --navy2: #16213E;
+    --navy3: #0F3460;
+    --bg: #F8F9FA;
+    --white: #FFFFFF;
+    --border: #E5E7EB;
+    --text: #111827;
+    --text2: #6B7280;
+    --text3: #9CA3AF;
+    --green: #10B981;
+    --amber: #F59E0B;
+    --red: #EF4444;
+    --sidebar-w: 220px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+  body { background: var(--bg); color: var(--text); }
+
+  /* ── NAV TABS ── */
+  .screen-tabs { display:flex; gap:4px; padding:12px 16px; background:var(--navy); position:fixed; top:0; left:0; right:0; z-index:999; }
+  .screen-tabs button {
+    padding:6px 14px; border:none; border-radius:6px; cursor:pointer;
+    font-size:12px; font-weight:500; background:rgba(255,255,255,.1); color:#fff;
+  }
+  .screen-tabs button.active { background:var(--gradient); color:#fff; }
+  .screen-tabs .logo-chip {
+    display:flex; align-items:center; gap:6px; margin-right:16px;
+    font-weight:700; font-size:13px; color:#fff;
+  }
+  .logo-chip span { background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+
+  /* ── SCREEN ── */
+  .screen { display:none; padding-top:48px; height:100vh; }
+  .screen.active { display:flex; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width:var(--sidebar-w); min-height:100%; background:var(--navy);
+    display:flex; flex-direction:column; flex-shrink:0; overflow-y:auto;
+  }
+  .sidebar .brand {
+    padding:16px; display:flex; align-items:center; gap:10px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .brand-icon {
+    width:32px; height:32px; border-radius:8px;
+    background:var(--gradient); display:flex; align-items:center; justify-content:center;
+    font-weight:800; color:#fff; font-size:13px;
+  }
+  .brand-name { font-weight:700; color:#fff; font-size:13px; line-height:1.2; }
+  .brand-sub { font-size:10px; color:rgba(255,255,255,.4); }
+  .sidebar nav { padding:12px 8px; flex:1; }
+  .nav-label { font-size:10px; font-weight:600; color:rgba(255,255,255,.3); text-transform:uppercase; letter-spacing:.08em; padding:8px 8px 4px; }
+  .nav-item {
+    display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:7px;
+    color:rgba(255,255,255,.6); font-size:13px; cursor:pointer; margin-bottom:2px;
+    transition:.15s;
+  }
+  .nav-item:hover { background:rgba(255,255,255,.08); color:#fff; }
+  .nav-item.active { background:rgba(255,107,157,.18); color:#FF6B9D; }
+  .nav-item .icon { font-size:15px; width:18px; text-align:center; }
+  .nav-item .badge {
+    margin-left:auto; background:var(--red); color:#fff;
+    font-size:10px; padding:1px 6px; border-radius:10px;
+  }
+  .sidebar-footer { padding:12px; border-top:1px solid rgba(255,255,255,.08); }
+  .user-chip { display:flex; align-items:center; gap:8px; padding:8px; border-radius:8px; cursor:pointer; }
+  .user-chip:hover { background:rgba(255,255,255,.08); }
+  .avatar { width:28px; height:28px; border-radius:50%; background:var(--gradient); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; flex-shrink:0; }
+  .user-info .name { font-size:12px; font-weight:600; color:#fff; }
+  .user-info .role { font-size:10px; color:rgba(255,255,255,.4); }
+
+  /* ── MAIN ── */
+  .main { flex:1; overflow-y:auto; }
+  .topbar {
+    height:48px; background:var(--white); border-bottom:1px solid var(--border);
+    display:flex; align-items:center; padding:0 20px; gap:12px; position:sticky; top:0; z-index:10;
+  }
+  .topbar .breadcrumb { font-size:13px; color:var(--text2); flex:1; }
+  .topbar .breadcrumb span { color:var(--text); font-weight:500; }
+  .topbar .actions { display:flex; align-items:center; gap:8px; }
+  .btn {
+    padding:6px 14px; border-radius:7px; border:none; cursor:pointer;
+    font-size:12px; font-weight:500; display:flex; align-items:center; gap:5px;
+  }
+  .btn-primary { background:var(--gradient); color:#fff; }
+  .btn-ghost { background:transparent; color:var(--text2); border:1px solid var(--border); }
+  .btn-ghost:hover { background:var(--bg); }
+  .icon-btn { width:32px; height:32px; border-radius:7px; border:1px solid var(--border); background:var(--white); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:15px; color:var(--text2); }
+  .icon-btn:hover { background:var(--bg); }
+  .page { padding:24px; }
+  .page-header { margin-bottom:20px; }
+  .page-title { font-size:20px; font-weight:700; color:var(--text); }
+  .page-sub { font-size:13px; color:var(--text2); margin-top:2px; }
+
+  /* ── STAT CARDS ── */
+  .stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:24px; }
+  .stat-card {
+    background:var(--white); border-radius:12px; padding:16px 20px;
+    border:1px solid var(--border); display:flex; flex-direction:column; gap:4px;
+  }
+  .stat-label { font-size:12px; color:var(--text2); font-weight:500; }
+  .stat-value { font-size:28px; font-weight:700; color:var(--text); line-height:1; }
+  .stat-sub { font-size:11px; color:var(--text3); margin-top:2px; }
+  .stat-card.highlight .stat-value { background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+
+  /* ── PROJECT CARDS ── */
+  .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .section-title { font-size:14px; font-weight:600; }
+  .toolbar { display:flex; align-items:center; gap:8px; }
+  .search-box { display:flex; align-items:center; gap:6px; border:1px solid var(--border); border-radius:7px; padding:6px 10px; background:var(--white); font-size:12px; color:var(--text2); width:200px; }
+  .select-box { border:1px solid var(--border); border-radius:7px; padding:6px 10px; font-size:12px; background:var(--white); color:var(--text2); cursor:pointer; }
+  .project-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
+  .project-card {
+    background:var(--white); border-radius:12px; padding:16px; border:1px solid var(--border);
+    cursor:pointer; transition:.2s;
+  }
+  .project-card:hover { border-color:#FF6B9D44; box-shadow:0 4px 16px #FF6B9D18; }
+  .project-card-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
+  .rag-dot { width:8px; height:8px; border-radius:50%; margin-top:4px; flex-shrink:0; }
+  .rag-green { background:var(--green); }
+  .rag-amber { background:var(--amber); }
+  .rag-red { background:var(--red); }
+  .project-type { font-size:10px; font-weight:600; padding:2px 8px; border-radius:10px; background:rgba(255,107,157,.1); color:var(--pink); }
+  .project-name { font-size:13px; font-weight:600; margin-bottom:4px; line-height:1.3; }
+  .project-pm { font-size:11px; color:var(--text2); margin-bottom:10px; }
+  .progress-bar { height:4px; background:var(--border); border-radius:2px; margin-bottom:8px; }
+  .progress-fill { height:100%; border-radius:2px; background:var(--gradient); }
+  .project-meta { display:flex; gap:12px; }
+  .meta-item { display:flex; align-items:center; gap:4px; font-size:11px; color:var(--text2); }
+
+  /* ── KANBAN ── */
+  .kanban-toolbar {
+    display:flex; align-items:center; gap:8px; padding:12px 20px;
+    background:var(--white); border-bottom:1px solid var(--border);
+    overflow-x:auto;
+  }
+  .view-tabs { display:flex; background:var(--bg); border-radius:7px; padding:2px; }
+  .view-tab { padding:5px 10px; border-radius:5px; font-size:12px; cursor:pointer; color:var(--text2); }
+  .view-tab.active { background:var(--white); color:var(--text); font-weight:500; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+  .filter-chip { padding:5px 10px; border-radius:20px; font-size:11px; border:1px solid var(--border); background:var(--white); cursor:pointer; color:var(--text2); white-space:nowrap; }
+  .filter-chip.active { background:rgba(255,107,157,.1); border-color:var(--pink); color:var(--pink); font-weight:500; }
+  .kanban-board { display:flex; gap:12px; padding:16px 20px; overflow-x:auto; flex:1; }
+  .kanban-col { width:260px; flex-shrink:0; }
+  .col-header {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:10px; padding:0 4px;
+  }
+  .col-title { font-size:12px; font-weight:600; display:flex; align-items:center; gap:6px; }
+  .col-count { width:18px; height:18px; border-radius:5px; background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--text2); font-weight:600; }
+  .col-wip { font-size:10px; color:var(--text3); }
+  .col-body { display:flex; flex-direction:column; gap:8px; }
+  .task-card {
+    background:var(--white); border:1px solid var(--border); border-radius:10px;
+    padding:12px; cursor:grab; transition:.15s;
+  }
+  .task-card:hover { border-color:#FF6B9D55; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+  .task-title { font-size:12px; font-weight:500; margin-bottom:8px; line-height:1.4; }
+  .task-meta { display:flex; align-items:center; justify-content:space-between; }
+  .priority-badge { font-size:10px; padding:2px 7px; border-radius:10px; font-weight:500; }
+  .p-high { background:#FEE2E2; color:#DC2626; }
+  .p-medium { background:#FEF3C7; color:#D97706; }
+  .p-low { background:#DCFCE7; color:#16A34A; }
+  .p-urgent { background:#FF6B9D22; color:#FF6B9D; }
+  .task-assignee { display:flex; align-items:center; gap:4px; font-size:10px; color:var(--text2); }
+  .avatar-xs { width:18px; height:18px; border-radius:50%; background:var(--gradient); display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:700; color:#fff; }
+  .task-date { font-size:10px; color:var(--text3); margin-top:6px; }
+  .task-date.overdue { color:var(--red); }
+  .add-task-btn { width:100%; padding:8px; border:1px dashed var(--border); border-radius:8px; background:transparent; color:var(--text3); font-size:12px; cursor:pointer; margin-top:4px; }
+  .add-task-btn:hover { border-color:var(--pink); color:var(--pink); background:rgba(255,107,157,.04); }
+  .approval-actions { display:flex; gap:6px; margin-top:8px; }
+  .btn-approve { flex:1; padding:4px; border-radius:6px; border:none; background:#DCFCE7; color:#16A34A; font-size:11px; font-weight:500; cursor:pointer; }
+  .btn-reject { flex:1; padding:4px; border-radius:6px; border:none; background:#FEE2E2; color:#DC2626; font-size:11px; font-weight:500; cursor:pointer; }
+
+  /* ── PROJECT DETAIL ── */
+  .project-header {
+    background:var(--white); border-bottom:1px solid var(--border);
+    padding:16px 20px;
+  }
+  .project-header-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .back-btn { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text2); cursor:pointer; border:none; background:none; }
+  .back-btn:hover { color:var(--text); }
+  .project-header-title { font-size:18px; font-weight:700; }
+  .project-header-pm { font-size:12px; color:var(--text2); margin-top:2px; }
+  .detail-tabs { display:flex; gap:0; border-bottom:1px solid var(--border); background:var(--white); }
+  .detail-tab { padding:10px 16px; font-size:12px; font-weight:500; color:var(--text2); cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; }
+  .detail-tab.active { color:var(--pink); border-bottom-color:var(--pink); }
+
+  /* Phase tab */
+  .phase-overview {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
+    background:var(--white); padding:16px 20px; border-bottom:1px solid var(--border);
+  }
+  .overview-item .ov-label { font-size:11px; color:var(--text2); margin-bottom:4px; }
+  .overview-item .ov-value { font-size:13px; font-weight:600; }
+  .prog-track { height:6px; background:var(--border); border-radius:3px; margin-top:6px; }
+  .prog-fill { height:100%; border-radius:3px; background:var(--gradient); }
+  .member-faces { display:flex; }
+  .face { width:24px; height:24px; border-radius:50%; border:2px solid #fff; margin-left:-6px; background:var(--gradient); display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; color:#fff; }
+  .face:first-child { margin-left:0; }
+  .phase-list { padding:16px 20px; }
+  .phase-item {
+    background:var(--white); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; margin-bottom:8px; display:flex; align-items:center; gap:12px;
+  }
+  .phase-order { width:24px; height:24px; border-radius:6px; background:rgba(255,107,157,.1); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--pink); flex-shrink:0; }
+  .phase-info { flex:1; }
+  .phase-name { font-size:13px; font-weight:600; }
+  .phase-dates { font-size:11px; color:var(--text2); margin-top:2px; }
+  .phase-weight { font-size:11px; color:var(--text2); padding:0 12px; }
+  .phase-progress { width:80px; }
+  .phase-pct { font-size:11px; font-weight:600; text-align:right; margin-bottom:3px; }
+
+  /* Resources tab */
+  .resource-list { padding:16px 20px; }
+  .resource-item {
+    background:var(--white); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; margin-bottom:8px;
+  }
+  .resource-header { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .resource-name { font-size:13px; font-weight:600; flex:1; }
+  .resource-role { font-size:11px; color:var(--text2); }
+  .resource-tasks { font-size:11px; color:var(--text2); }
+  .workload-bar { height:5px; background:var(--bg); border-radius:3px; margin-bottom:6px; }
+  .workload-fill { height:100%; border-radius:3px; background:var(--gradient); }
+  .workload-fill.warning { background: linear-gradient(135deg,var(--amber),var(--red)); }
+  .resource-task-list { display:flex; flex-direction:column; gap:4px; }
+  .rtask { font-size:11px; color:var(--text2); padding:4px 8px; background:var(--bg); border-radius:5px; }
+
+  /* ── MEETING ── */
+  .meeting-layout { display:flex; gap:0; flex:1; overflow:hidden; }
+  .calendar-sidebar { width:280px; border-right:1px solid var(--border); background:var(--white); padding:16px; overflow-y:auto; flex-shrink:0; }
+  .mini-cal { margin-bottom:16px; }
+  .mini-cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .mini-cal-title { font-size:13px; font-weight:600; }
+  .mini-cal-nav { width:24px; height:24px; border:none; background:none; cursor:pointer; color:var(--text2); font-size:14px; border-radius:5px; }
+  .mini-cal-nav:hover { background:var(--bg); }
+  .mini-cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+  .cal-day-label { font-size:10px; color:var(--text3); text-align:center; padding:2px; font-weight:500; }
+  .cal-day { font-size:11px; text-align:center; padding:4px 2px; border-radius:5px; cursor:pointer; }
+  .cal-day:hover { background:var(--bg); }
+  .cal-day.today { background:var(--gradient); color:#fff; font-weight:600; border-radius:50%; }
+  .cal-day.has-event { position:relative; }
+  .cal-day.has-event::after { content:''; position:absolute; bottom:1px; left:50%; transform:translateX(-50%); width:4px; height:4px; border-radius:50%; background:var(--pink); }
+  .meeting-types { }
+  .type-label { font-size:11px; font-weight:600; color:var(--text2); margin-bottom:8px; }
+  .type-item { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text2); margin-bottom:6px; cursor:pointer; }
+  .type-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .meeting-main { flex:1; overflow-y:auto; }
+  .meeting-day-filter {
+    display:flex; gap:4px; padding:12px 16px; background:var(--white);
+    border-bottom:1px solid var(--border); overflow-x:auto;
+  }
+  .day-chip { padding:5px 12px; border-radius:20px; font-size:12px; border:1px solid var(--border); background:var(--white); cursor:pointer; color:var(--text2); white-space:nowrap; }
+  .day-chip.active { background:var(--gradient); border-color:transparent; color:#fff; font-weight:500; }
+  .meeting-date-header { padding:12px 16px; font-size:13px; font-weight:600; color:var(--text2); border-bottom:1px solid var(--border); background:var(--bg); }
+  .meeting-item {
+    display:flex; gap:12px; padding:14px 16px; border-bottom:1px solid var(--border);
+    background:var(--white); cursor:pointer;
+  }
+  .meeting-item:hover { background:#FFF5F9; }
+  .meeting-time { font-size:11px; color:var(--text2); width:80px; flex-shrink:0; padding-top:2px; }
+  .meeting-body { flex:1; }
+  .meeting-title { font-size:13px; font-weight:600; margin-bottom:4px; }
+  .meeting-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .meeting-type-badge { font-size:10px; padding:2px 8px; border-radius:10px; font-weight:500; }
+  .mt-review { background:#EDE9FE; color:#7C3AED; }
+  .mt-standup { background:#DCFCE7; color:#16A34A; }
+  .mt-board { background:#FEF3C7; color:#D97706; }
+  .mt-other { background:var(--bg); color:var(--text2); }
+  .meeting-loc { font-size:11px; color:var(--text2); display:flex; align-items:center; gap:3px; }
+  .meeting-attendees { display:flex; margin-top:6px; }
+  .meeting-attendees .face { width:20px; height:20px; font-size:8px; }
+  .meeting-attendee-count { font-size:11px; color:var(--text2); margin-left:8px; align-self:center; }
+  .empty-state { padding:48px; text-align:center; color:var(--text3); }
+  .empty-state .icon { font-size:36px; margin-bottom:8px; }
+  .empty-state p { font-size:13px; }
+
+  /* notification dot */
+  .notif-btn { position:relative; }
+  .notif-badge { position:absolute; top:-4px; right:-4px; width:16px; height:16px; background:var(--red); border-radius:50%; font-size:9px; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; }
+
+  /* Gantt preview */
+  .gantt-row { display:flex; align-items:center; gap:0; margin-bottom:6px; }
+  .gantt-label { width:140px; font-size:11px; color:var(--text2); flex-shrink:0; }
+  .gantt-track { flex:1; height:20px; background:var(--bg); border-radius:4px; position:relative; }
+  .gantt-bar { position:absolute; top:2px; height:16px; border-radius:3px; background:var(--gradient); opacity:.8; display:flex; align-items:center; padding:0 6px; }
+  .gantt-bar-label { font-size:9px; color:#fff; font-weight:600; white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<!-- SCREEN NAVIGATOR -->
+<div class="screen-tabs">
+  <div class="logo-chip">🤖 <span>MOCA ERP</span></div>
+  <button class="active" onclick="showScreen('dashboard')">① Dashboard</button>
+  <button onclick="showScreen('kanban')">② Kanban Board</button>
+  <button onclick="showScreen('project')">③ Chi tiết Dự án</button>
+  <button onclick="showScreen('meeting')">④ Lịch họp</button>
+</div>
+
+<!-- ══════════════ SCREEN 1: DASHBOARD ══════════════ -->
+<div class="screen active" id="screen-dashboard">
+  <div class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">M</div>
+      <div>
+        <div class="brand-name">MOCA ERP</div>
+        <div class="brand-sub">Research · STEM · Project</div>
+      </div>
+    </div>
+    <nav>
+      <div class="nav-label">Tổng quan</div>
+      <div class="nav-item active"><span class="icon">⊞</span> Dashboard</div>
+      <div class="nav-item"><span class="icon">📈</span> Hiệu suất</div>
+      <div class="nav-label">Quản lý dự án</div>
+      <div class="nav-item"><span class="icon">◫</span> Workspace</div>
+      <div class="nav-item"><span class="icon">📁</span> Dự án</div>
+      <div class="nav-item"><span class="icon">📅</span> Lịch họp</div>
+      <div class="nav-item"><span class="icon">📄</span> Tài liệu</div>
+      <div class="nav-label">Tổ chức</div>
+      <div class="nav-item"><span class="icon">⏱</span> Chấm công</div>
+      <div class="nav-item"><span class="icon">🏢</span> Phòng ban</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="avatar">HB</div>
+        <div class="user-info">
+          <div class="name">Hà Danh Bình</div>
+          <div class="role">Project Manager</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <div class="breadcrumb"><span>Dashboard</span></div>
+      <div class="actions">
+        <div class="icon-btn notif-btn">🔔<span class="notif-badge">3</span></div>
+        <div class="avatar" style="width:30px;height:30px;font-size:12px;">HB</div>
+      </div>
+    </div>
+    <div class="page">
+      <div class="page-header">
+        <div class="page-title">Xin chào, Bình 👋</div>
+        <div class="page-sub">Thứ 5, 14 tháng 5 năm 2026 · 3 thông báo chưa đọc</div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card highlight">
+          <div class="stat-label">Dự án của tôi</div>
+          <div class="stat-value">5</div>
+          <div class="stat-sub">🟢 4 đúng tiến độ · 🔴 1 trễ</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Công việc quá hạn</div>
+          <div class="stat-value" style="color:var(--red)">2</div>
+          <div class="stat-sub">Cần xử lý ngay</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Tổng công việc</div>
+          <div class="stat-value">47</div>
+          <div class="stat-sub">5 dự án đang chạy</div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">Dự án đang tham gia</div>
+        <div class="toolbar">
+          <div class="search-box">🔍 Tìm dự án...</div>
+          <select class="select-box"><option>Theo RAG</option></select>
+          <select class="select-box"><option>Tất cả loại</option></select>
+          <button class="btn btn-primary">+ Tạo dự án</button>
+        </div>
+      </div>
+
+      <div class="project-grid">
+        <div class="project-card">
+          <div class="project-card-header">
+            <div>
+              <div class="project-type">STEM</div>
+            </div>
+            <div class="rag-dot rag-green" title="Đúng tiến độ"></div>
+          </div>
+          <div class="project-name">[STEM] Robot giáo dục Moca v2</div>
+          <div class="project-pm">PM: Nguyễn Văn An</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div>
+          <div class="project-meta">
+            <div class="meta-item">📋 18 tasks</div>
+            <div class="meta-item">👥 6 người</div>
+            <div class="meta-item">72%</div>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-card-header">
+            <div><div class="project-type">Research</div></div>
+            <div class="rag-dot rag-amber"></div>
+          </div>
+          <div class="project-name">[RD] Nghiên cứu AI trong giáo dục 2026</div>
+          <div class="project-pm">PM: Trần Thị Lan</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:38%;background:var(--amber)"></div></div>
+          <div class="project-meta">
+            <div class="meta-item">📋 12 tasks</div>
+            <div class="meta-item">👥 4 người</div>
+            <div class="meta-item">38%</div>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-card-header">
+            <div><div class="project-type">Project</div></div>
+            <div class="rag-dot rag-red"></div>
+          </div>
+          <div class="project-name">[PRJ] Website tuyển sinh Q3/2026</div>
+          <div class="project-pm">PM: Hà Danh Bình</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:15%;background:var(--red)"></div></div>
+          <div class="project-meta">
+            <div class="meta-item">📋 8 tasks</div>
+            <div class="meta-item">👥 3 người</div>
+            <div class="meta-item">15%</div>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-card-header">
+            <div><div class="project-type">STEM</div></div>
+            <div class="rag-dot rag-green"></div>
+          </div>
+          <div class="project-name">[STEM] Cuộc thi lập trình Moca Cup</div>
+          <div class="project-pm">PM: Lê Công Toại</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
+          <div class="project-meta">
+            <div class="meta-item">📋 9 tasks</div>
+            <div class="meta-item">👥 8 người</div>
+            <div class="meta-item">90%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SCREEN 2: KANBAN BOARD ══════════════ -->
+<div class="screen" id="screen-kanban" style="flex-direction:column;">
+  <div style="display:flex;flex:1;overflow:hidden;">
+    <div class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">M</div>
+        <div><div class="brand-name">MOCA ERP</div><div class="brand-sub">Research · STEM · Project</div></div>
+      </div>
+      <nav>
+        <div class="nav-label">Quản lý dự án</div>
+        <div class="nav-item"><span class="icon">◫</span> Workspace</div>
+        <div class="nav-item"><span class="icon">📁</span> Dự án</div>
+        <div class="nav-label">Dự án hiện tại</div>
+        <div class="nav-item"><span class="icon">⧖</span> Giai đoạn</div>
+        <div class="nav-item active"><span class="icon">⊞</span> Công việc</div>
+        <div class="nav-item"><span class="icon">📄</span> Tài liệu</div>
+        <div class="nav-item"><span class="icon">👥</span> Nguồn lực</div>
+        <div class="nav-item"><span class="icon">⏱</span> Nhật ký</div>
+        <div class="nav-item"><span class="icon">📅</span> Lịch họp <span class="badge">2</span></div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-chip"><div class="avatar">HB</div><div class="user-info"><div class="name">Hà Danh Bình</div><div class="role">Project Manager</div></div></div>
+      </div>
+    </div>
+    <div class="main" style="display:flex;flex-direction:column;overflow:hidden;">
+      <div class="topbar">
+        <div class="breadcrumb">Dự án / <span>[STEM] Robot giáo dục Moca v2</span> / Công việc</div>
+        <div class="actions">
+          <button class="btn btn-ghost">📋 Báo cáo hôm nay</button>
+          <div class="icon-btn notif-btn">🔔<span class="notif-badge">3</span></div>
+        </div>
+      </div>
+      <!-- Project header -->
+      <div class="project-header" style="padding:12px 20px;">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <button class="back-btn">← Quay lại</button>
+          <div>
+            <div class="project-header-title">[STEM] Robot giáo dục Moca v2</div>
+            <div class="project-header-pm">PM: Nguyễn Văn An · <span style="color:var(--green);font-weight:500;">● Đúng tiến độ</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-tabs" style="padding:0 20px;">
+        <div class="detail-tab">Giai đoạn</div>
+        <div class="detail-tab active">Công việc</div>
+        <div class="detail-tab">Tài liệu</div>
+        <div class="detail-tab">Nguồn lực</div>
+        <div class="detail-tab">Nhật ký</div>
+      </div>
+      <div class="kanban-toolbar">
+        <div class="view-tabs">
+          <div class="view-tab active">⊞ Kanban</div>
+          <div class="view-tab">≡ Danh sách</div>
+          <div class="view-tab">⋮ Cây</div>
+        </div>
+        <div style="width:1px;height:20px;background:var(--border);margin:0 4px;"></div>
+        <div class="filter-chip active">Tất cả</div>
+        <div class="filter-chip">👤 Của tôi</div>
+        <div class="filter-chip">⚠ Quá hạn</div>
+        <div class="filter-chip">🔗 Chưa gán</div>
+        <div style="flex:1;"></div>
+        <select class="select-box"><option>Mức ưu tiên</option></select>
+        <button class="btn btn-primary">+ Tạo công việc</button>
+      </div>
+      <div class="kanban-board">
+        <!-- NEW -->
+        <div class="kanban-col">
+          <div class="col-header">
+            <div class="col-title"><div class="col-count">3</div> Mới</div>
+          </div>
+          <div class="col-body">
+            <div class="task-card">
+              <div class="task-title">Thiết kế module điều khiển servo cho tay robot</div>
+              <div class="task-meta">
+                <span class="priority-badge p-medium">Trung bình</span>
+                <div class="task-assignee"><div class="avatar-xs">TV</div> Tiến</div>
+              </div>
+              <div class="task-date">📅 20/05/2026</div>
+            </div>
+            <div class="task-card">
+              <div class="task-title">Viết tài liệu kỹ thuật phần cứng v2</div>
+              <div class="task-meta">
+                <span class="priority-badge p-low">Thấp</span>
+                <div class="task-assignee"><div class="avatar-xs">NH</div> Nhung</div>
+              </div>
+              <div class="task-date">📅 25/05/2026</div>
+            </div>
+            <div class="task-card">
+              <div class="task-title">Nghiên cứu thuật toán nhận diện khuôn mặt</div>
+              <div class="task-meta">
+                <span class="priority-badge p-high">Cao</span>
+                <div class="task-assignee"><div class="avatar-xs">—</div> Chưa gán</div>
+              </div>
+              <div class="task-date">📅 18/05/2026</div>
+            </div>
+            <button class="add-task-btn">+ Thêm công việc</button>
+          </div>
+        </div>
+
+        <!-- IN PROGRESS -->
+        <div class="kanban-col">
+          <div class="col-header">
+            <div class="col-title"><div class="col-count">4</div> Đang làm</div>
+            <div class="col-wip">WIP: 4/5</div>
+          </div>
+          <div class="col-body">
+            <div class="task-card">
+              <div class="task-title">Lập trình firmware điều khiển chuyển động</div>
+              <div class="task-meta">
+                <span class="priority-badge p-urgent">Khẩn</span>
+                <div class="task-assignee"><div class="avatar-xs">HB</div> Bình</div>
+              </div>
+              <div class="task-date overdue">⚠ Quá hạn · 12/05/2026</div>
+            </div>
+            <div class="task-card">
+              <div class="task-title">Tích hợp module WiFi ESP32</div>
+              <div class="task-meta">
+                <span class="priority-badge p-high">Cao</span>
+                <div class="task-assignee"><div class="avatar-xs">LC</div> Công</div>
+              </div>
+              <div class="task-date">📅 16/05/2026</div>
+            </div>
+            <div class="task-card">
+              <div class="task-title">Thiết kế PCB board mạch nguồn</div>
+              <div class="task-meta">
+                <span class="priority-badge p-medium">Trung bình</span>
+                <div class="task-assignee"><div class="avatar-xs">PT</div> Tuấn</div>
+              </div>
+              <div class="task-date">📅 19/05/2026</div>
+            </div>
+            <button class="add-task-btn">+ Thêm công việc</button>
+          </div>
+        </div>
+
+        <!-- PENDING APPROVAL -->
+        <div class="kanban-col">
+          <div class="col-header">
+            <div class="col-title"><div class="col-count" style="background:#FEF3C7;color:var(--amber);">2</div> Chờ duyệt</div>
+          </div>
+          <div class="col-body">
+            <div class="task-card" style="border-color:var(--amber)44;">
+              <div class="task-title">Viết báo cáo khảo sát thị trường robot giáo dục</div>
+              <div class="task-meta">
+                <span class="priority-badge p-medium">Trung bình</span>
+                <div class="task-assignee"><div class="avatar-xs">TL</div> Lan</div>
+              </div>
+              <div class="task-date">📅 13/05/2026</div>
+              <div class="approval-actions">
+                <button class="btn-approve">✓ Duyệt</button>
+                <button class="btn-reject">✗ Từ chối</button>
+              </div>
+            </div>
+            <div class="task-card" style="border-color:var(--amber)44;">
+              <div class="task-title">Thiết kế UI app điều khiển robot (Figma)</div>
+              <div class="task-meta">
+                <span class="priority-badge p-high">Cao</span>
+                <div class="task-assignee"><div class="avatar-xs">HB</div> Bình</div>
+              </div>
+              <div class="task-date">📅 14/05/2026</div>
+              <div class="approval-actions">
+                <button class="btn-approve">✓ Duyệt</button>
+                <button class="btn-reject">✗ Từ chối</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DONE -->
+        <div class="kanban-col">
+          <div class="col-header">
+            <div class="col-title"><div class="col-count" style="background:#DCFCE7;color:var(--green);">5</div> Hoàn thành</div>
+          </div>
+          <div class="col-body" style="opacity:.6;">
+            <div class="task-card">
+              <div class="task-title" style="text-decoration:line-through;">Phân tích yêu cầu phần cứng robot</div>
+              <div class="task-meta"><span class="priority-badge p-high">Cao</span><div class="task-assignee"><div class="avatar-xs">VA</div> An</div></div>
+              <div class="task-date">✅ 08/05/2026</div>
+            </div>
+            <div class="task-card">
+              <div class="task-title" style="text-decoration:line-through;">Chọn linh kiện và đặt hàng</div>
+              <div class="task-meta"><span class="priority-badge p-medium">Trung bình</span><div class="task-assignee"><div class="avatar-xs">LC</div> Công</div></div>
+              <div class="task-date">✅ 05/05/2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SCREEN 3: PROJECT DETAIL ══════════════ -->
+<div class="screen" id="screen-project" style="flex-direction:column;">
+  <div style="display:flex;flex:1;overflow:hidden;">
+    <div class="sidebar">
+      <div class="brand"><div class="brand-icon">M</div><div><div class="brand-name">MOCA ERP</div><div class="brand-sub">Research · STEM · Project</div></div></div>
+      <nav>
+        <div class="nav-label">Quản lý dự án</div>
+        <div class="nav-item"><span class="icon">📁</span> Dự án</div>
+        <div class="nav-label">Chi tiết dự án</div>
+        <div class="nav-item active"><span class="icon">⧖</span> Giai đoạn</div>
+        <div class="nav-item"><span class="icon">⊞</span> Công việc</div>
+        <div class="nav-item"><span class="icon">👥</span> Nguồn lực</div>
+        <div class="nav-item"><span class="icon">⏱</span> Nhật ký</div>
+      </nav>
+      <div class="sidebar-footer"><div class="user-chip"><div class="avatar">HB</div><div class="user-info"><div class="name">Hà Danh Bình</div><div class="role">Project Manager</div></div></div></div>
+    </div>
+    <div class="main" style="display:flex;flex-direction:column;overflow:hidden;">
+      <div class="topbar">
+        <div class="breadcrumb">Dự án / <span>[STEM] Robot giáo dục Moca v2</span> / Giai đoạn</div>
+        <div class="actions"><button class="btn btn-ghost">📋 Báo cáo hôm nay</button></div>
+      </div>
+      <div class="project-header">
+        <div class="project-header-top">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="back-btn">← Quay lại</button>
+            <div>
+              <div class="project-header-title">[STEM] Robot giáo dục Moca v2</div>
+              <div class="project-header-pm">PM: Nguyễn Văn An</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-ghost">✏ Chỉnh sửa</button>
+            <button class="btn btn-primary">+ Thêm giai đoạn</button>
+          </div>
+        </div>
+      </div>
+      <div class="detail-tabs" style="padding:0 20px;">
+        <div class="detail-tab active">⧖ Giai đoạn</div>
+        <div class="detail-tab">⊞ Công việc</div>
+        <div class="detail-tab">📄 Tài liệu</div>
+        <div class="detail-tab">👥 Nguồn lực</div>
+        <div class="detail-tab">⏱ Nhật ký</div>
+      </div>
+
+      <div style="overflow-y:auto;flex:1;">
+        <!-- Overview -->
+        <div class="phase-overview">
+          <div class="overview-item">
+            <div class="ov-label">Tiến độ tổng</div>
+            <div class="ov-value">72%</div>
+            <div class="prog-track"><div class="prog-fill" style="width:72%"></div></div>
+          </div>
+          <div class="overview-item">
+            <div class="ov-label">Trọng số đã dùng</div>
+            <div class="ov-value">100% / 100%</div>
+            <div style="font-size:11px;color:var(--green);margin-top:4px;">✓ Phân bổ hợp lệ</div>
+          </div>
+          <div class="overview-item">
+            <div class="ov-label">Mốc thời gian</div>
+            <div class="ov-value" style="font-size:12px;">01/03 → 31/08/2026</div>
+          </div>
+          <div class="overview-item">
+            <div class="ov-label">Thành viên</div>
+            <div class="member-faces" style="margin-top:4px;">
+              <div class="face">VA</div><div class="face">HB</div><div class="face">LC</div>
+              <div class="face">TL</div><div class="face" style="background:var(--border);color:var(--text2);font-size:9px;">+3</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div style="display:flex;align-items:center;gap:8px;padding:12px 20px;border-bottom:1px solid var(--border);">
+          <select class="select-box"><option>Tất cả (3)</option></select>
+          <div class="search-box" style="flex:1;max-width:300px;">🔍 Tìm giai đoạn hoặc công việc...</div>
+          <select class="select-box"><option>Mặc định</option></select>
+          <button class="btn btn-ghost">📊 Gantt</button>
+        </div>
+
+        <!-- Phases -->
+        <div class="phase-list">
+          <div class="phase-item">
+            <div class="phase-order">1</div>
+            <div class="phase-info">
+              <div class="phase-name">Nghiên cứu & Phân tích yêu cầu</div>
+              <div class="phase-dates">01/03/2026 → 31/03/2026 · 6 tasks</div>
+            </div>
+            <div class="phase-weight">Trọng số: 20%</div>
+            <div class="phase-progress">
+              <div class="phase-pct" style="color:var(--green);">100%</div>
+              <div class="prog-track"><div class="prog-fill" style="width:100%"></div></div>
+            </div>
+            <div style="color:var(--green);font-size:13px;margin-left:8px;">✓</div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-order">2</div>
+            <div class="phase-info">
+              <div class="phase-name">Thiết kế & Phát triển phần cứng</div>
+              <div class="phase-dates">01/04/2026 → 31/05/2026 · 8 tasks</div>
+            </div>
+            <div class="phase-weight">Trọng số: 40%</div>
+            <div class="phase-progress">
+              <div class="phase-pct" style="color:var(--amber);">60%</div>
+              <div class="prog-track"><div class="prog-fill" style="width:60%;background:var(--amber)"></div></div>
+            </div>
+            <div style="color:var(--amber);font-size:13px;margin-left:8px;">⚠</div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-order">3</div>
+            <div class="phase-info">
+              <div class="phase-name">Phát triển phần mềm & Tích hợp</div>
+              <div class="phase-dates">01/06/2026 → 31/07/2026 · 4 tasks</div>
+            </div>
+            <div class="phase-weight">Trọng số: 30%</div>
+            <div class="phase-progress">
+              <div class="phase-pct" style="color:var(--text3);">0%</div>
+              <div class="prog-track"><div class="prog-fill" style="width:0%"></div></div>
+            </div>
+            <div style="color:var(--text3);font-size:13px;margin-left:8px;">○</div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-order">4</div>
+            <div class="phase-info">
+              <div class="phase-name">Kiểm thử & Triển khai</div>
+              <div class="phase-dates">01/08/2026 → 31/08/2026 · 3 tasks</div>
+            </div>
+            <div class="phase-weight">Trọng số: 10%</div>
+            <div class="phase-progress">
+              <div class="phase-pct" style="color:var(--text3);">0%</div>
+              <div class="prog-track"><div class="prog-fill" style="width:0%"></div></div>
+            </div>
+            <div style="color:var(--text3);font-size:13px;margin-left:8px;">○</div>
+          </div>
+        </div>
+
+        <!-- Gantt Preview -->
+        <div style="padding:16px 20px;background:var(--white);border-top:1px solid var(--border);">
+          <div style="font-size:12px;font-weight:600;margin-bottom:10px;color:var(--text2);">📊 Gantt Chart (xem trước)</div>
+          <div style="font-size:10px;color:var(--text3);display:flex;gap:0;margin-bottom:6px;padding-left:140px;">
+            <div style="flex:1;text-align:center;">T3</div><div style="flex:1;text-align:center;">T4</div>
+            <div style="flex:1;text-align:center;">T5</div><div style="flex:1;text-align:center;">T6</div>
+            <div style="flex:1;text-align:center;">T7</div><div style="flex:1;text-align:center;">T8</div>
+          </div>
+          <div class="gantt-row"><div class="gantt-label">Nghiên cứu & PT</div><div class="gantt-track"><div class="gantt-bar" style="left:0%;width:16.6%;"><span class="gantt-bar-label">100%</span></div></div></div>
+          <div class="gantt-row"><div class="gantt-label">Phần cứng</div><div class="gantt-track"><div class="gantt-bar" style="left:16.6%;width:33.3%;background:var(--amber);"><span class="gantt-bar-label">60%</span></div></div></div>
+          <div class="gantt-row"><div class="gantt-label">Phần mềm</div><div class="gantt-track"><div class="gantt-bar" style="left:50%;width:33.3%;opacity:.3;"><span class="gantt-bar-label">0%</span></div></div></div>
+          <div class="gantt-row"><div class="gantt-label">Kiểm thử</div><div class="gantt-track"><div class="gantt-bar" style="left:83.3%;width:16.6%;opacity:.3;"><span class="gantt-bar-label">0%</span></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SCREEN 4: MEETING ══════════════ -->
+<div class="screen" id="screen-meeting" style="flex-direction:column;">
+  <div style="display:flex;flex:1;overflow:hidden;">
+    <div class="sidebar">
+      <div class="brand"><div class="brand-icon">M</div><div><div class="brand-name">MOCA ERP</div><div class="brand-sub">Research · STEM · Project</div></div></div>
+      <nav>
+        <div class="nav-label">Quản lý dự án</div>
+        <div class="nav-item"><span class="icon">◫</span> Workspace</div>
+        <div class="nav-item"><span class="icon">📁</span> Dự án</div>
+        <div class="nav-item active"><span class="icon">📅</span> Lịch họp</div>
+        <div class="nav-item"><span class="icon">📄</span> Tài liệu</div>
+      </nav>
+      <div class="sidebar-footer"><div class="user-chip"><div class="avatar">HB</div><div class="user-info"><div class="name">Hà Danh Bình</div><div class="role">Project Manager</div></div></div></div>
+    </div>
+    <div class="main" style="display:flex;flex-direction:column;overflow:hidden;">
+      <div class="topbar">
+        <div class="breadcrumb"><span>Lịch họp</span></div>
+        <div class="actions">
+          <button class="btn btn-primary">+ Tạo lịch họp</button>
+          <div class="icon-btn notif-btn">🔔<span class="notif-badge">3</span></div>
+        </div>
+      </div>
+      <div class="meeting-day-filter">
+        <div class="day-chip active">Tất cả</div>
+        <div class="day-chip">T2 · 11</div>
+        <div class="day-chip">T3 · 12</div>
+        <div class="day-chip">T4 · 13</div>
+        <div class="day-chip" style="background:var(--gradient);color:#fff;border-color:transparent;font-weight:500;">T5 · 14 ●</div>
+        <div class="day-chip">T6 · 15</div>
+        <div class="day-chip">T7 · 16</div>
+        <div class="day-chip">CN · 17</div>
+      </div>
+      <div class="meeting-layout" style="flex:1;">
+        <!-- Mini Calendar -->
+        <div class="calendar-sidebar">
+          <div class="mini-cal">
+            <div class="mini-cal-header">
+              <div class="mini-cal-title">Tháng 5 · 2026</div>
+              <div style="display:flex;gap:2px;">
+                <button class="mini-cal-nav">‹</button>
+                <button class="mini-cal-nav">›</button>
+              </div>
+            </div>
+            <div class="mini-cal-grid">
+              <div class="cal-day-label">T2</div><div class="cal-day-label">T3</div><div class="cal-day-label">T4</div>
+              <div class="cal-day-label">T5</div><div class="cal-day-label">T6</div><div class="cal-day-label">T7</div><div class="cal-day-label">CN</div>
+              <div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div>
+              <div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div>
+              <div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div>
+              <div class="cal-day has-event">7</div><div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div>
+              <div class="cal-day">11</div><div class="cal-day has-event">12</div><div class="cal-day">13</div>
+              <div class="cal-day today">14</div><div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div>
+              <div class="cal-day">18</div><div class="cal-day has-event">19</div><div class="cal-day">20</div>
+              <div class="cal-day has-event">21</div><div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div>
+              <div class="cal-day">25</div><div class="cal-day">26</div><div class="cal-day">27</div>
+              <div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day">30</div><div class="cal-day">31</div>
+            </div>
+          </div>
+          <div class="meeting-types">
+            <div class="type-label">Loại cuộc họp</div>
+            <div class="type-item"><div class="type-dot" style="background:#7C3AED;"></div>Review</div>
+            <div class="type-item"><div class="type-dot" style="background:var(--green);"></div>Standup</div>
+            <div class="type-item"><div class="type-dot" style="background:var(--amber);"></div>Board</div>
+            <div class="type-item"><div class="type-dot" style="background:var(--pink);"></div>Khác</div>
+          </div>
+        </div>
+        <!-- Meeting list -->
+        <div class="meeting-main">
+          <div class="meeting-date-header">Thứ 5, ngày 14 tháng 5 năm 2026 · 2 cuộc họp</div>
+          <div class="meeting-item">
+            <div class="meeting-time">09:00<br><span style="color:var(--text3)">09:15</span></div>
+            <div class="meeting-body">
+              <div class="meeting-title">Daily Standup – Team Robot</div>
+              <div class="meeting-meta">
+                <span class="meeting-type-badge mt-standup">Standup</span>
+                <div class="meeting-loc">📍 Google Meet</div>
+                <div class="meeting-loc">📁 Robot giáo dục Moca v2</div>
+              </div>
+              <div class="meeting-attendees">
+                <div class="face" style="width:20px;height:20px;font-size:8px;">HB</div>
+                <div class="face" style="width:20px;height:20px;font-size:8px;">VA</div>
+                <div class="face" style="width:20px;height:20px;font-size:8px;">LC</div>
+                <div class="face" style="width:20px;height:20px;font-size:8px;">TL</div>
+                <div class="face" style="width:20px;height:20px;font-size:8px;background:var(--border);color:var(--text2);">+2</div>
+                <div class="meeting-attendee-count">6 người tham dự</div>
+              </div>
+            </div>
+          </div>
+          <div class="meeting-item">
+            <div class="meeting-time">14:00<br><span style="color:var(--text3)">15:30</span></div>
+            <div class="meeting-body">
+              <div class="meeting-title">Sprint Review Q2 – Phần cứng Robot</div>
+              <div class="meeting-meta">
+                <span class="meeting-type-badge mt-review">Review</span>
+                <div class="meeting-loc">📍 Phòng họp A · Tầng 3</div>
+                <div class="meeting-loc">📁 Robot giáo dục Moca v2</div>
+              </div>
+              <div class="meeting-attendees">
+                <div class="face" style="width:20px;height:20px;font-size:8px;">HB</div>
+                <div class="face" style="width:20px;height:20px;font-size:8px;">VA</div>
+                <div class="face" style="width:20px;height:20px;font-size:8px;">LC</div>
+                <div class="face" style="width:20px;height:20px;font-size:8px;background:var(--border);color:var(--text2);">+5</div>
+                <div class="meeting-attendee-count">8 người tham dự</div>
+              </div>
+            </div>
+          </div>
+          <div class="meeting-date-header">Thứ 6, ngày 15 tháng 5 năm 2026 · 1 cuộc họp</div>
+          <div class="meeting-item">
+            <div class="meeting-time">10:00<br><span style="color:var(--text3)">11:00</span></div>
+            <div class="meeting-body">
+              <div class="meeting-title">Board Meeting – Báo cáo tiến độ tháng 5</div>
+              <div class="meeting-meta">
+                <span class="meeting-type-badge mt-board">Board</span>
+                <div class="meeting-loc">📍 Phòng họp Ban Giám Đốc</div>
+              </div>
+              <div class="meeting-attendees">
+                <div class="face" style="width:20px;height:20px;font-size:8px;">CEO</div>
+                <div class="face" style="width:20px;height:20px;font-size:8px;">HB</div>
+                <div class="face" style="width:20px;height:20px;font-size:8px;background:var(--border);color:var(--text2);">+3</div>
+                <div class="meeting-attendee-count">5 người tham dự</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen-tabs button').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

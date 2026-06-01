@@ -1,0 +1,23 @@
+Name: erp-api
+Host: 0.0.0.0
+Port: 8888
+
+Auth:
+  AccessSecret: "change-me-in-production-use-strong-random-secret"
+  AccessExpire: 86400  # 24 hours in seconds
+
+DB:
+  DataSource: "postgres://erp_user:erp_pass@localhost:5434/moca_erp?sslmode=disable"
+
+Cache:
+  - Host: localhost:6379
+    Pass: ""
+
+Log:
+  Level: info
+  Mode: console
+
+Cors:
+  AllowOrigins:
+    - "http://localhost:3000"
+    - "https://erp.mocatech.vn"
