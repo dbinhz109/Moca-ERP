@@ -43,10 +43,8 @@ type FormValues = z.infer<typeof schema>;
 type MemberRow = { user_id: string; bonus_amount: number };
 
 const PROJECT_TYPES = [
-  { value: "stem", label: "STEM" },
-  { value: "research", label: "Nghiên cứu (R&D)" },
-  { value: "project", label: "Dự án" },
-  { value: "internal", label: "Nội bộ" },
+  { value: "research", label: "Research" },
+  { value: "product", label: "Product" },
 ];
 
 export function CreateProjectDialog({
@@ -71,7 +69,7 @@ export function CreateProjectDialog({
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { type: "project", workspace_id: defaultWorkspaceId, bonus_pool: "" },
+    defaultValues: { type: "research", workspace_id: defaultWorkspaceId, bonus_pool: "" },
   });
 
   const pool = Number(watch("bonus_pool")) || 0;

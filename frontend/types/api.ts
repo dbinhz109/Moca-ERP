@@ -4,7 +4,7 @@ export type RagStatus = "green" | "amber" | "red";
 export type TaskStatus = "new" | "in_progress" | "pending_review" | "done" | "rejected";
 export type TaskPriority = "low" | "medium" | "high" | "urgent";
 export type MeetingType = "review" | "standup" | "board" | "other";
-export type ProjectType = "stem" | "research" | "project" | "internal" | string;
+export type ProjectType = "research" | "product" | string;
 
 export interface UserInfo {
   id: string;
