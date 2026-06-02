@@ -57,37 +57,35 @@ export default function LoginPage() {
           className="absolute inset-0 opacity-90"
           style={{
             background:
-              "radial-gradient(80% 60% at 80% 20%, rgba(255,107,157,0.35) 0%, transparent 60%), radial-gradient(70% 60% at 10% 90%, rgba(255,179,71,0.28) 0%, transparent 60%), #1A1A2E",
+              "radial-gradient(80% 60% at 80% 20%, rgba(255,93,174,0.35) 0%, transparent 60%), radial-gradient(70% 60% at 10% 90%, rgba(255,184,77,0.28) 0%, transparent 60%), #272A6B",
           }}
         />
-        <div className="relative z-10 flex h-full flex-col p-12">
-          <div className="flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/moca-logo.jpg" alt="MOCA TECH" className="h-11 w-11 rounded-xl object-cover shadow-lg" />
-            <div className="leading-tight">
-              <div className="text-base font-bold">MOCA ERP</div>
-              <div className="text-xs text-white/50">Research · STEM · Project</div>
-            </div>
+        <div className="relative z-10 flex h-full flex-col items-center justify-center p-12 text-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/moca-logo.jpg"
+            alt="MOCA TECH"
+            className="h-48 w-48 rounded-[2rem] object-cover shadow-2xl ring-1 ring-white/20"
+          />
+          <div className="mt-6 text-2xl font-extrabold tracking-tight">MOCA ERP</div>
+          <div className="mt-1 text-sm text-white/50">Research · STEM · Project</div>
+          <div className="mt-10 max-w-md text-3xl font-bold leading-tight">
+            Quản trị dự án MOCA{" "}
+            <span className="text-gradient-brand">đơn giản và hiệu quả.</span>
           </div>
-          <div className="mt-auto max-w-md">
-            <div className="text-3xl font-bold leading-tight">
-              Quản trị dự án MOCA <br />
-              <span className="text-gradient-brand">đơn giản và hiệu quả.</span>
-            </div>
-            <p className="mt-3 text-sm text-white/60">
-              Workspace · Dự án · Giai đoạn · Kanban · Lịch họp — gọn trong một nền tảng.
-            </p>
-          </div>
+          <p className="mt-3 max-w-md text-sm text-white/60">
+            Workspace · Dự án · Giai đoạn · Kanban · Lịch họp — gọn trong một nền tảng.
+          </p>
         </div>
       </div>
 
       {/* Form panel */}
       <div className="flex flex-1 items-center justify-center bg-white px-6 py-12">
         <div className="w-full max-w-sm">
-          <div className="mb-8 flex items-center gap-3 lg:hidden">
+          <div className="mb-8 flex flex-col items-center gap-2 lg:hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/moca-logo.jpg" alt="MOCA TECH" className="h-9 w-9 rounded-lg object-cover" />
-            <div className="text-sm font-bold">MOCA ERP</div>
+            <img src="/moca-logo.jpg" alt="MOCA TECH" className="h-24 w-24 rounded-2xl object-cover shadow-lg" />
+            <div className="text-base font-bold">MOCA ERP</div>
           </div>
           <h1 className="text-2xl font-bold">Đăng nhập</h1>
           <p className="mt-1 text-sm text-text2">
