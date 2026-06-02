@@ -7,7 +7,7 @@ import { ArrowLeft, Users } from "lucide-react";
 import { Topbar } from "@/components/layout/Topbar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { useProject, useProjectMembers } from "@/lib/hooks/useProjects";
+import { useProject, useProjectMembers, useSetProjectPm } from "@/lib/hooks/useProjects";
 import { usePhases } from "@/lib/hooks/usePhases";
 import { useProjectTasks, useUpdateTaskStatus } from "@/lib/hooks/useTasks";
 import { extractErrorMessage } from "@/lib/api";
@@ -36,6 +36,17 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
   const currentUser = useAuthStore((s) => s.user);
   const canAssignOthers = currentUser?.role === "admin" || project?.pm_id === currentUser?.id;
   const updateStatus = useUpdateTaskStatus(id);
+  const setPm = useSetProjectPm(id);
+
+  const handleSetPm = async (userId: string) => {
+    try {
+      await setPm.mutateAsync(userId);
+      toast.success("Đã đổi PM dự án");
+    } catch (err) {
+      toast.error(extractErrorMessage(err, "Không thể đổi PM"));
+      throw err;
+    }
+  };
 
   const moveTask = async (taskId: string, toStatus: string) => {
     try {
@@ -162,7 +173,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
           {loadingMembers ? (
             <div className="text-sm text-text2">Đang tải thành viên...</div>
           ) : (
-            <MemberList members={members} />
+            <MemberList members={members} canManage={canAssignOthers} onSetPm={handleSetPm} />
           )}
         </TabsContent>
       </Tabs>

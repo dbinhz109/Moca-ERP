@@ -12,6 +12,11 @@ type CommonResp struct {
 	Message string `json:"message"`
 }
 
+// SetProjectPmReq: chỉ định PM mới cho dự án.
+type SetProjectPmReq struct {
+	UserId string `json:"user_id" validate:"required"`
+}
+
 type CreateMeetingReq struct {
 	Title          string   `json:"title" validate:"required,max=300"`
 	Type           string   `json:"type" validate:"required,oneof=review standup board other"`

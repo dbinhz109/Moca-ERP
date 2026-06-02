@@ -92,3 +92,18 @@ export function useDeleteProject() {
     },
   });
 }
+
+export function useSetProjectPm(projectId: string | undefined) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (userId: string) => {
+      const { data } = await api.patch(`/projects/${projectId}/pm`, { user_id: userId });
+      return data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["project", projectId, "members"] });
+      qc.invalidateQueries({ queryKey: ["project", projectId] });
+      qc.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+}

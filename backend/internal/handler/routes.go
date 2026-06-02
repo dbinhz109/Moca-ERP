@@ -261,6 +261,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/projects/:id/rag",
 					Handler: project.UpdateRagHandler(serverCtx),
 				},
+				{
+					// Chỉ định PM cho dự án
+					Method:  http.MethodPatch,
+					Path:    "/projects/:id/pm",
+					Handler: project.SetProjectPmHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1"),
