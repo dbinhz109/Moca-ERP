@@ -31,14 +31,14 @@ export default function MeetingsPage() {
 
   return (
     <>
-      <Topbar
-        breadcrumb={<span className="font-medium text-text">Lịch họp</span>}
-        actions={<CreateMeetingDialog trigger={<Button size="sm">+ Tạo lịch họp</Button>} />}
-      />
+      <Topbar breadcrumb={<span className="font-medium text-text">Lịch họp</span>} />
       <div className="p-6">
-        <div className="mb-5">
-          <h1 className="text-xl font-bold">Lịch họp</h1>
-          <p className="mt-0.5 text-sm text-text2">{data?.total ?? 0} cuộc họp trong hệ thống.</p>
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h1 className="text-xl font-bold">Lịch họp</h1>
+            <p className="mt-0.5 text-sm text-text2">{data?.total ?? 0} cuộc họp trong hệ thống.</p>
+          </div>
+          <CreateMeetingDialog trigger={<Button>+ Tạo lịch họp</Button>} />
         </div>
 
         {isLoading ? (
