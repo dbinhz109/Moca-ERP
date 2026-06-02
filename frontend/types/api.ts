@@ -88,11 +88,16 @@ export interface ProjectMemberResp {
   project_role: string;
   avatar?: string;
   bonus_amount: number;
+  advance_amount: number; // ứng cá nhân (trừ)
+  expense_amount: number; // chi mua đồ (được bù)
+  net_amount: number; // thực nhận = thưởng - ứng + chi
 }
 
 export interface AddProjectMemberReq {
   user_id: string;
   bonus_amount?: number;
+  advance_amount?: number; // ứng cá nhân (trừ vào thưởng)
+  expense_amount?: number; // chi mua đồ phục vụ dự án (được bù)
 }
 
 export interface CreateProjectReq {

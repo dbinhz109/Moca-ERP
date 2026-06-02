@@ -56,10 +56,17 @@ export function MemberList({ members, canManage, onSetPm }: MemberListProps) {
               <div className="text-[11px] text-text2 truncate">{m.email || m.username}</div>
             </div>
 
-            {m.bonus_amount > 0 && (
+            {(m.bonus_amount > 0 || m.advance_amount > 0 || m.expense_amount > 0) && (
               <div className="text-right">
-                <div className="text-[13px] font-semibold text-rag-green">{formatVnd(m.bonus_amount)}</div>
-                <div className="text-[10px] text-text2">thưởng khi hoàn thành</div>
+                <div className="text-[13px] font-semibold text-rag-green">{formatVnd(m.net_amount)}</div>
+                <div className="text-[10px] text-text2">thực nhận</div>
+                {(m.advance_amount > 0 || m.expense_amount > 0) && (
+                  <div className="mt-0.5 text-[10px] text-text3">
+                    thưởng {formatVnd(m.bonus_amount)}
+                    {m.advance_amount > 0 && <span className="text-rag-red"> − ứng {formatVnd(m.advance_amount)}</span>}
+                    {m.expense_amount > 0 && <span className="text-rag-amber"> + chi {formatVnd(m.expense_amount)}</span>}
+                  </div>
+                )}
               </div>
             )}
 

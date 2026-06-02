@@ -26,7 +26,7 @@ func NewAddProjectMemberLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
-func (l *AddProjectMemberLogic) AddProjectMember(projectID, userID string, bonusAmount float64) (resp *types.CommonResp, err error) {
+func (l *AddProjectMemberLogic) AddProjectMember(projectID, userID string, bonusAmount, advanceAmount, expenseAmount float64) (resp *types.CommonResp, err error) {
 	actorID, err := ctxutil.UserIDFromCtx(l.ctx)
 	if err != nil {
 		return nil, err
@@ -34,8 +34,12 @@ func (l *AddProjectMemberLogic) AddProjectMember(projectID, userID string, bonus
 	if err = perm.RequireProjectManager(l.ctx, l.svcCtx.DB, projectID, actorID); err != nil {
 		return nil, err
 	}
-	if bonusAmount < 0 {
-		return nil, fmt.Errorf("tiền thưởng không được âm")
+	if bonusAmount < 0 || advanceAmount < 0 || expenseAmount < 0 {
+		return nil, fmt.Errorf("số tiền không được âm")
+	}
+	// Ứng cá nhân bị trừ vào thưởng -> không được vượt thưởng (tránh thực nhận âm phần thưởng).
+	if advanceAmount > bonusAmount {
+		return nil, fmt.Errorf("ứng cá nhân (%.0f) không được vượt tiền thưởng (%.0f)", advanceAmount, bonusAmount)
 	}
 
 	// Chặn nếu tổng tiền thưởng các thành viên (không tính người này) + mức mới vượt quỹ dự án.
@@ -55,10 +59,13 @@ func (l *AddProjectMemberLogic) AddProjectMember(projectID, userID string, bonus
 	}
 
 	_, err = l.svcCtx.DB.ExecContext(l.ctx, `
-		INSERT INTO project_members (project_id, user_id, role, bonus_amount)
-		VALUES ($1, $2, 'member', $3)
-		ON CONFLICT (project_id, user_id) DO UPDATE SET bonus_amount = EXCLUDED.bonus_amount`,
-		projectID, userID, bonusAmount)
+		INSERT INTO project_members (project_id, user_id, role, bonus_amount, advance_amount, expense_amount)
+		VALUES ($1, $2, 'member', $3, $4, $5)
+		ON CONFLICT (project_id, user_id) DO UPDATE SET
+			bonus_amount   = EXCLUDED.bonus_amount,
+			advance_amount = EXCLUDED.advance_amount,
+			expense_amount = EXCLUDED.expense_amount`,
+		projectID, userID, bonusAmount, advanceAmount, expenseAmount)
 	if err != nil {
 		return nil, fmt.Errorf("failed to add member: %w", err)
 	}

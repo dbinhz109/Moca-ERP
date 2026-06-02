@@ -50,19 +50,24 @@ type CreateProjectReq struct {
 }
 
 type AddProjectMemberReq struct {
-	UserId      string  `json:"user_id" validate:"required"`
-	BonusAmount float64 `json:"bonus_amount,optional"`
+	UserId        string  `json:"user_id" validate:"required"`
+	BonusAmount   float64 `json:"bonus_amount,optional"`
+	AdvanceAmount float64 `json:"advance_amount,optional"` // ứng cá nhân -> trừ vào thưởng
+	ExpenseAmount float64 `json:"expense_amount,optional"` // ứng mua đồ -> được bù lại
 }
 
 type ProjectMemberResp struct {
-	Id          string  `json:"id"`
-	Username    string  `json:"username"`
-	FullName    string  `json:"full_name"`
-	Email       string  `json:"email"`
-	Role        string  `json:"role"`
-	ProjectRole string  `json:"project_role"`
-	Avatar      string  `json:"avatar,omitempty"`
-	BonusAmount float64 `json:"bonus_amount"`
+	Id            string  `json:"id"`
+	Username      string  `json:"username"`
+	FullName      string  `json:"full_name"`
+	Email         string  `json:"email"`
+	Role          string  `json:"role"`
+	ProjectRole   string  `json:"project_role"`
+	Avatar        string  `json:"avatar,omitempty"`
+	BonusAmount   float64 `json:"bonus_amount"`
+	AdvanceAmount float64 `json:"advance_amount"` // ứng cá nhân (trừ)
+	ExpenseAmount float64 `json:"expense_amount"` // chi mua đồ (được bù)
+	NetAmount     float64 `json:"net_amount"`     // thực nhận = thưởng - ứng + chi
 }
 
 type CreateTaskReq struct {
