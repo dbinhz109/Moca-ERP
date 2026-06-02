@@ -112,11 +112,6 @@ export default function LoginPage() {
               Đăng nhập
             </Button>
           </form>
-
-          <div className="mt-6 rounded-lg border border-border bg-bg p-3 text-xs text-text2">
-            <div className="font-semibold text-text mb-1">Tài khoản demo</div>
-            <div>Username: <code className="text-pink">admin</code> · Password: <code className="text-pink">password</code></div>
-          </div>
         </div>
       </div>
     </div>
