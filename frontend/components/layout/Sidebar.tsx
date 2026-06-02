@@ -4,14 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutGrid,
-  TrendingUp,
   Boxes,
   FolderKanban,
   Calendar,
-  FileText,
   Bell,
-  Clock,
-  Building2,
   Settings,
   UserCog,
 } from "lucide-react";
@@ -44,15 +40,6 @@ const groups: NavGroup[] = [
       { href: "/workspaces", label: "Workspace", icon: <Boxes className="h-4 w-4" /> },
       { href: "/projects", label: "Dự án", icon: <FolderKanban className="h-4 w-4" /> },
       { href: "/meetings", label: "Lịch họp", icon: <Calendar className="h-4 w-4" /> },
-    ],
-  },
-  {
-    label: "Tổ chức",
-    items: [
-      { href: "/performance", label: "Hiệu suất", icon: <TrendingUp className="h-4 w-4" /> },
-      { href: "/documents", label: "Tài liệu", icon: <FileText className="h-4 w-4" /> },
-      { href: "/attendance", label: "Chấm công", icon: <Clock className="h-4 w-4" /> },
-      { href: "/departments", label: "Phòng ban", icon: <Building2 className="h-4 w-4" /> },
     ],
   },
   {
