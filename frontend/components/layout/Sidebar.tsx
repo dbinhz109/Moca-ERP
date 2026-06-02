@@ -59,9 +59,8 @@ export function Sidebar() {
     <aside className="flex w-[220px] flex-shrink-0 flex-col bg-navy text-white">
       {/* Brand */}
       <div className="flex items-center gap-2.5 border-b border-white/10 px-4 py-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-brand text-[13px] font-extrabold">
-          M
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/moca-logo.jpg" alt="MOCA TECH" className="h-9 w-9 flex-shrink-0 rounded-lg object-cover" />
         <div className="leading-tight">
           <div className="text-[13px] font-bold">MOCA ERP</div>
           <div className="text-[10px] text-white/40">Research · STEM · Project</div>

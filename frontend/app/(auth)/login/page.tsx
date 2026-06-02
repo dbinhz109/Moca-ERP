@@ -62,9 +62,8 @@ export default function LoginPage() {
         />
         <div className="relative z-10 flex h-full flex-col p-12">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-brand text-base font-extrabold">
-              M
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/moca-logo.jpg" alt="MOCA TECH" className="h-11 w-11 rounded-xl object-cover shadow-lg" />
             <div className="leading-tight">
               <div className="text-base font-bold">MOCA ERP</div>
               <div className="text-xs text-white/50">Research · STEM · Project</div>
@@ -86,9 +85,8 @@ export default function LoginPage() {
       <div className="flex flex-1 items-center justify-center bg-white px-6 py-12">
         <div className="w-full max-w-sm">
           <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-brand text-sm font-extrabold text-white">
-              M
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/moca-logo.jpg" alt="MOCA TECH" className="h-9 w-9 rounded-lg object-cover" />
             <div className="text-sm font-bold">MOCA ERP</div>
           </div>
           <h1 className="text-2xl font-bold">Đăng nhập</h1>

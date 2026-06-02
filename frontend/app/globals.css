@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-pink: #FF6B9D;
-  --color-orange: #FFB347;
-  --color-navy: #1A1A2E;
-  --color-navy2: #16213E;
-  --color-navy3: #0F3460;
+  --color-pink: #FF5DAE;
+  --color-orange: #FFB84D;
+  --color-navy: #272A6B;
+  --color-navy2: #20224F;
+  --color-navy3: #1B257C;
   --color-bg: #F8F9FA;
   --color-text: #111827;
   --color-text2: #6B7280;
@@ -21,7 +21,7 @@
 :root {
   --background: #F8F9FA;
   --foreground: #111827;
-  --gradient: linear-gradient(135deg, #FF6B9D, #FFB347);
+  --gradient: linear-gradient(135deg, #FF5DAE, #FFB84D);
 }
 
 html, body {
@@ -32,17 +32,17 @@ html, body {
 
 @layer utilities {
   .bg-gradient-brand {
-    background: linear-gradient(135deg, #FF6B9D, #FFB347);
+    background: linear-gradient(135deg, #FF5DAE, #FFB84D);
   }
   .text-gradient-brand {
-    background: linear-gradient(135deg, #FF6B9D, #FFB347);
+    background: linear-gradient(135deg, #FF5DAE, #FFB84D);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
   }
   .border-gradient-brand {
-    border-image: linear-gradient(135deg, #FF6B9D, #FFB347) 1;
+    border-image: linear-gradient(135deg, #FF5DAE, #FFB84D) 1;
   }
   .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
   .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(0,0,0,.18); border-radius: 999px; }
