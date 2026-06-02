@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/mocatech/erp/internal/ctxutil"
+	"github.com/mocatech/erp/internal/notify"
 	"github.com/mocatech/erp/internal/svc"
 	"github.com/mocatech/erp/internal/types"
 
@@ -40,7 +41,9 @@ func (l *CreateMeetingLogic) CreateMeeting(req *types.CreateMeetingReq) (resp *t
 	var m types.MeetingResp
 	err = tx.QueryRowContext(l.ctx, `
 		INSERT INTO meetings (title, type, organizer_id, start_time, end_time, location, meeting_url, project_id)
-		VALUES ($1,$2,$3,$4::timestamptz,$5::timestamptz,NULLIF($6,''),NULLIF($7,''),NULLIF($8,'')::uuid)
+		VALUES ($1,$2,$3,$4::timestamptz,
+		        COALESCE(NULLIF($5,'')::timestamptz, $4::timestamptz + interval '1 hour'),
+		        NULLIF($6,''),NULLIF($7,''),NULLIF($8,'')::uuid)
 		RETURNING id, title, type, status, start_time::text, end_time::text,
 		          COALESCE(location,''), COALESCE(meeting_url,''),
 		          COALESCE(project_id::text,''), organizer_id, created_at::text`,
@@ -78,5 +81,22 @@ func (l *CreateMeetingLogic) CreateMeeting(req *types.CreateMeetingReq) (resp *t
 			}
 		}
 	}
+
+	// Gửi thông báo mời họp cho người tham dự (trừ người tổ chức), kèm link online.
+	body := "Bắt đầu: " + m.StartTime
+	if m.MeetingUrl != "" {
+		body += "\nLink online: " + m.MeetingUrl
+	}
+	recipients := make([]string, 0, len(req.AttendeeIds))
+	for _, aID := range req.AttendeeIds {
+		if aID != "" && aID != userID {
+			recipients = append(recipients, aID)
+		}
+	}
+	if len(recipients) > 0 {
+		notify.Dispatch(l.ctx, l.svcCtx.DB, recipients, notify.EventMeeting,
+			"Lịch họp mới: "+m.Title, body, m.Id, "meeting")
+	}
+
 	return &m, nil
 }

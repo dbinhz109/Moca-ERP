@@ -23,6 +23,7 @@ const (
 	EventReview   = "review"   // có việc cần duyệt
 	EventDecision = "decision" // việc được duyệt / bị từ chối
 	EventComment  = "comment"  // có bình luận mới
+	EventMeeting  = "meeting"  // được mời họp (luôn gửi, không gate theo toggle)
 )
 
 // settingsColumn ánh xạ loại sự kiện -> cột cờ bật/tắt của người dùng.
@@ -72,10 +73,9 @@ func pushExternal(userID, event, title, body string, db *sql.DB) {
 		}
 	}()
 
-	col, ok := settingsColumn[event]
-	if !ok {
-		return
-	}
+	// Sự kiện có cột bật/tắt riêng (assigned/review/...) thì tôn trọng cờ đó;
+	// sự kiện không có cột (vd lịch họp) luôn được gửi nếu kênh đã bật & liên kết.
+	col, hasCol := settingsColumn[event]
 
 	// Cấu hình hệ thống.
 	var tgEnabled, zaloEnabled bool
@@ -93,19 +93,29 @@ func pushExternal(userID, event, title, body string, db *sql.DB) {
 
 	// Tuỳ chọn của người dùng.
 	var chatID, zaloUID string
-	var tgOn, zaloOn, wantEvent bool
-	q := fmt.Sprintf(`
-		SELECT telegram_chat_id, zalo_user_id, telegram_on, zalo_on, %s
-		FROM user_notification_settings WHERE user_id = $1`, col)
-	switch err := db.QueryRowContext(bg, q, userID).
-		Scan(&chatID, &zaloUID, &tgOn, &zaloOn, &wantEvent); err {
+	var tgOn, zaloOn bool
+	wantEvent := true
+	var scanErr error
+	if hasCol {
+		q := fmt.Sprintf(`
+			SELECT telegram_chat_id, zalo_user_id, telegram_on, zalo_on, %s
+			FROM user_notification_settings WHERE user_id = $1`, col)
+		scanErr = db.QueryRowContext(bg, q, userID).
+			Scan(&chatID, &zaloUID, &tgOn, &zaloOn, &wantEvent)
+	} else {
+		scanErr = db.QueryRowContext(bg, `
+			SELECT telegram_chat_id, zalo_user_id, telegram_on, zalo_on
+			FROM user_notification_settings WHERE user_id = $1`, userID).
+			Scan(&chatID, &zaloUID, &tgOn, &zaloOn)
+	}
+	switch scanErr {
 	case nil:
 		// ok
 	case sql.ErrNoRows:
 		// Chưa cấu hình -> chưa liên kết kênh nào, bỏ qua.
 		return
 	default:
-		logx.Errorf("notify: đọc tuỳ chọn người dùng thất bại (user=%s): %v", userID, err)
+		logx.Errorf("notify: đọc tuỳ chọn người dùng thất bại (user=%s): %v", userID, scanErr)
 		return
 	}
 	if !wantEvent {

@@ -223,7 +223,7 @@ export interface CreateMeetingReq {
   title: string;
   type: MeetingType;
   start_time: string;
-  end_time: string;
+  end_time?: string;
   location?: string;
   meeting_url?: string;
   project_id?: string;

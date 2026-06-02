@@ -21,7 +21,7 @@ type CreateMeetingReq struct {
 	Title          string   `json:"title" validate:"required,max=300"`
 	Type           string   `json:"type" validate:"required,oneof=review standup board other"`
 	StartTime      string   `json:"start_time" validate:"required"`
-	EndTime        string   `json:"end_time" validate:"required"`
+	EndTime        string   `json:"end_time,optional"`
 	Location       string   `json:"location,optional"`
 	MeetingUrl     string   `json:"meeting_url,optional"`
 	ProjectId      string   `json:"project_id,optional"`

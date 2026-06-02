@@ -11,6 +11,7 @@ import (
 
 	"github.com/mocatech/erp/internal/config"
 	"github.com/mocatech/erp/internal/handler"
+	"github.com/mocatech/erp/internal/reminder"
 	"github.com/mocatech/erp/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
@@ -43,6 +44,9 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
+
+	// Nền: nhắc họp 5 phút trước giờ bắt đầu.
+	reminder.Start(ctx.DB)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

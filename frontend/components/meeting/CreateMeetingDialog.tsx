@@ -26,8 +26,6 @@ const schema = z.object({
   title: z.string().min(1, "Tiêu đề là bắt buộc").max(300),
   type: z.enum(["review", "standup", "board", "other"]),
   start_time: z.string().min(1, "Thời gian bắt đầu là bắt buộc"),
-  end_time: z.string().min(1, "Thời gian kết thúc là bắt buộc"),
-  location: z.string().optional(),
   meeting_url: z.string().optional(),
   project_id: z.string().optional(),
 });
@@ -53,11 +51,10 @@ export function CreateMeetingDialog({ trigger }: { trigger?: React.ReactNode }) 
 
   const onSubmit = async (values: FormValues) => {
     try {
-      // Convert local datetime to ISO
+      // Convert local datetime to ISO (giờ kết thúc do server tự đặt = bắt đầu + 1h)
       const payload = {
         ...values,
         start_time: new Date(values.start_time).toISOString(),
-        end_time: new Date(values.end_time).toISOString(),
       };
       if (!payload.project_id) delete payload.project_id;
       await create.mutateAsync(payload);
@@ -126,31 +123,16 @@ export function CreateMeetingDialog({ trigger }: { trigger?: React.ReactNode }) 
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label htmlFor="m-start">Bắt đầu</Label>
-              <Input id="m-start" type="datetime-local" {...register("start_time")} />
-              {errors.start_time && (
-                <p className="mt-1 text-[11px] text-rag-red">{errors.start_time.message}</p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="m-end">Kết thúc</Label>
-              <Input id="m-end" type="datetime-local" {...register("end_time")} />
-              {errors.end_time && (
-                <p className="mt-1 text-[11px] text-rag-red">{errors.end_time.message}</p>
-              )}
-            </div>
+          <div>
+            <Label htmlFor="m-start">Thời gian bắt đầu</Label>
+            <Input id="m-start" type="datetime-local" {...register("start_time")} />
+            {errors.start_time && (
+              <p className="mt-1 text-[11px] text-rag-red">{errors.start_time.message}</p>
+            )}
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label htmlFor="m-loc">Địa điểm</Label>
-              <Input id="m-loc" placeholder="Phòng họp A" {...register("location")} />
-            </div>
-            <div>
-              <Label htmlFor="m-url">Link online</Label>
-              <Input id="m-url" placeholder="https://meet.google.com/..." {...register("meeting_url")} />
-            </div>
+          <div>
+            <Label htmlFor="m-url">Link online</Label>
+            <Input id="m-url" placeholder="https://meet.google.com/..." {...register("meeting_url")} />
           </div>
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
